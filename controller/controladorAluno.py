@@ -10,8 +10,8 @@ class ControladorAluno:
         self.__controladorPesquisa = ControladorPesquisa()
 
     def inicia_sistema(self):
-        lista_opcoes = {1: self.add_aluno, 2: self.alterar_aluno, 3: self.excluir_aluno, 4: self.mostrar_todos,
-                        0: self.retorna}
+        lista_opcoes = {1: self.add_aluno, 2: self.alterar_aluno,3: self.mostrar_todos,
+                        4: self.pesquisar, 0: self.sair}
 
         continua = True
         while continua:
@@ -57,46 +57,72 @@ class ControladorAluno:
         self.__aluno_dao.get_all().update({cpf: aluno})
         self.__tela.mostra_mensagem("Aluno incluido com sucesso!")
         self.__controladorPesquisa.add_cpf_curso(curso, cpf)
+        self.__controladorPesquisa.add_cpf_idade(int(idade), cpf)
+        self.__controladorPesquisa.add_cpf_ano_ingresso(int(ano_ingresso), cpf)
 
 
     def alterar_aluno(self):
         cpf = self.__tela.selecionar_aluno()
-        if cpf in self.__aluno_dao.get_all():
-            nome = self.__aluno_dao.get_all()[cpf].nome
-            idade = self.__aluno_dao.get_all()[cpf].idade
-            curso = self.__aluno_dao.get_all()[cpf].curso
-            ano_ingresso = self.__aluno_dao.get_all()[cpf].ano_de_ingresso
-            opcao = self.__tela.escolher_edicao(nome, curso, idade, ano_ingresso)
-            if opcao == 1:
-                edit = self.__tela.editar_aluno("nome")
-                self.__aluno_dao.get_all()[cpf].set_nome(edit)
-            elif opcao == 2:
-                edit = self.__tela.editar_curso(curso)
-                self.__aluno_dao.get_all()[cpf].set_curso(edit)
-                self.__controladorPesquisa.alterar_cpf_curso(curso, edit, cpf)
-            elif opcao == 3:
-                edit = self.__tela.editar_aluno("idade")
-                self.__aluno_dao.get_all()[cpf].set_idade(edit)
-            elif opcao == 4:
-                edit = self.__tela.editar_aluno("ano de ingresso")
-                self.__aluno_dao.get_all()[cpf].set_ano_de_ingresso(edit)
-            elif opcao == 0:
-                return
+        terminou = None
+        while terminou == None:
+            if cpf in self.__aluno_dao.get_all():
+                nome = self.__aluno_dao.get_all()[cpf].nome
+                idade = self.__aluno_dao.get_all()[cpf].idade
+                curso = self.__aluno_dao.get_all()[cpf].curso
+                ano_ingresso = self.__aluno_dao.get_all()[cpf].ano_de_ingresso
+                opcao = self.__tela.escolher_edicao(nome, curso, idade, ano_ingresso)
+                if opcao == 1:
+                    edit = self.__tela.editar_aluno("nome")
+                    self.__aluno_dao.get_all()[cpf].set_nome(edit)
+                elif opcao == 2:
+                    edit = self.__tela.editar_curso(curso)
+                    self.__aluno_dao.get_all()[cpf].set_curso(edit)
+                    self.__controladorPesquisa.alterar_cpf_curso(curso, edit, cpf)
+                elif opcao == 3:
+                    idade_valido = False
+                    while idade_valido == False:
+                        edit = self.__tela.editar_aluno("idade")
+                        idade_valido = True
+                        if edit.isdigit() == False:
+                            self.__tela.mostra_mensagem("Idade deve conter somente numeros!")
+                            idade_valido = False
+                    self.__aluno_dao.get_all()[cpf].set_idade(int(edit))
+                    self.__controladorPesquisa.alterar_cpf_idade(idade, int(edit), cpf)
+                elif opcao == 4:
+                    ano_valido = False
+                    while ano_valido == False:
+                        ano_valido = True
+                        edit = self.__tela.editar_aluno("Ano de ingresso na faculdade")
+                        if edit.isdigit() == False:
+                            self.__tela.mostra_mensagem("Ano deve conter somente numeros!")
+                            ano_valido = False
+                        if ano_valido == True:
+                            if int(edit) < 1960 or int(edit) > 2023:
+                                self.__tela.mostra_mensagem("Digite um ano valido!(maior que 1959 e menor que 2024")
+                                ano_valido = False
+                    self.__aluno_dao.get_all()[cpf].set_ano_de_ingresso(edit)
+                    self.__controladorPesquisa.alterar_cpf_ano_ingresso(int(ano_ingresso),int(edit), cpf)
+                elif opcao == 5:
+                    terminou = True
+                    self.excluir_aluno(cpf)
+                elif opcao == 0:
+                    terminou = True
 
 
 
 
 
 
-    def excluir_aluno(self):
-        cpf = self.__tela.selecionar_aluno()
-        if cpf in self.__aluno_dao.get_all():
-            curso = self.__aluno_dao.get_all()[cpf].curso
-            del self.__aluno_dao.get_all()[cpf]
-            self.__tela.mostra_mensagem("Aluno Excluido com sucesso!")
-            self.__controladorPesquisa.excluir_cpf_curso(curso, cpf)
-        else:
-            self.__tela.mostra_mensagem("O cpf não corresponde a nenhum aluno")
+
+    def excluir_aluno(self, cpf):
+        curso = self.__aluno_dao.get_all()[cpf].curso
+        idade = self.__aluno_dao.get_all()[cpf].idade
+        ano_ingresso = self.__aluno_dao.get_all()[cpf].ano_de_ingresso
+        del self.__aluno_dao.get_all()[cpf]
+        self.__tela.mostra_mensagem("Aluno Excluido com sucesso!")
+        self.__controladorPesquisa.excluir_cpf_curso(curso, cpf)
+        self.__controladorPesquisa.excluir_cpf_idade(idade, cpf)
+        self.__controladorPesquisa.excluir_cpf_ano_ingresso(ano_ingresso, cpf)
 
     def mostrar_todos(self):
         if len(self.__aluno_dao.get_all()) == 0:
@@ -114,7 +140,9 @@ class ControladorAluno:
 
 
 
-    def retorna(self):
+    def pesquisar(self):
+        self.__controladorPesquisa.tela_pesquisa()
+    def sair(self):
         pass
 
 
