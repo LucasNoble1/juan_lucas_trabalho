@@ -6,7 +6,7 @@ class TelaAluno(Tela):
         self.__controlador = controlador
 
     def tela_opcoes(self):
-        print("-----Opçoes-----")
+        print("-----Opçoes do Sistema-----")
         print("\n")
         print("1 - Cadastrar aluno")
         print("2 - Selecionar um aluno")
