@@ -8,10 +8,10 @@ class TelaAluno(Tela):
     def tela_opcoes(self):
         print("-----Opçoes-----")
         print("\n")
-        print("1 - Cadastrar novo aluno")
-        print("2 - Editar informações de um aluno")
-        print("3 - Excluir um aluno")
-        print("4 - Mostrar todos os alunos")
+        print("1 - Cadastrar aluno")
+        print("2 - Selecionar um aluno")
+        print("3 - Mostrar todos os alunos")
+        print("4 - Pesquisar alunos")
         print("0 - Voltar")
         print("\n")
         opcao = self.le_num_inteiro("Selecione uma opção:", [1, 2, 3, 4, 0])
@@ -118,9 +118,7 @@ class TelaAluno(Tela):
         print(" 2 => Alterar o Curso: ", curso)
         print(" 3 => Alterar a Idade: ", idade)
         print(" 4 => Alterar o Ano de ingresso na faculdade: ", ano_ingresso)
-        print(" 0 => CANCELAR ")
-        opcao = self.le_num_inteiro("Selecione uma opção:", [1, 2, 3, 4, 0])
+        print(" 5 => EXCLUIR ALUNO")
+        print(" 0 => VOLTAR ")
+        opcao = self.le_num_inteiro("Selecione uma opção:", [1, 2, 3, 4, 5, 0])
         return opcao
-
-
-
