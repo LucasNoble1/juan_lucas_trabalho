@@ -143,7 +143,7 @@ class ControladorAluno:
     def pesquisar(self):
         self.__controladorPesquisa.tela_pesquisa()
     def sair(self):
-        exit[0]
+        exit(0)
 
 
 
